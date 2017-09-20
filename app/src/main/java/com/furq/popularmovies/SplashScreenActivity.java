@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+/**
+ * Created by furqan.khan on 9/15/17.
+ */
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     // time delay in ms
@@ -25,4 +29,5 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         }, TIME_DELAY);
     }
+
 }
