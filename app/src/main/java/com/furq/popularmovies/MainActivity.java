@@ -4,13 +4,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.furq.popularmovies.Adapters.MoviesAdapter;
 import com.furq.popularmovies.models.Movie;
 import com.furq.popularmovies.models.MovieResponse;
 import com.furq.popularmovies.utils.ApiClient;
 import com.furq.popularmovies.utils.ApiInterface;
+import com.furq.popularmovies.utils.RecyclerViewClickListener;
 
 import java.util.List;
 
@@ -34,14 +39,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         moviesGrid = (RecyclerView) findViewById(R.id.moviesGrid);
-        callTopRatedMovies();
+        getMoviesData(true);
     }
 
-    private void callTopRatedMovies() {
+    private void getMoviesData(boolean topRated) {
 
         ApiInterface apiService =
                 ApiClient.getClient(Constant.BASE_URL).create(ApiInterface.class);
-        Call<MovieResponse> call = apiService.getTopRatedMovies(Constant.API_KEY);
+        Call<MovieResponse> call;
+        if (topRated) {
+            call = apiService.getTopRatedMovies(Constant.API_KEY);
+        } else {
+            call = apiService.getPopularMovies(Constant.API_KEY);
+        }
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -65,5 +75,33 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, t.toString());
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_popular:
+                getMoviesData(false);
+                Toast.makeText(this, "Popular movies ", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            case R.id.action_top_movies:
+                getMoviesData(true);
+                Toast.makeText(this, "Top selected", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+
+            default:
+                break;
+        }
+
+        return true;
     }
 }

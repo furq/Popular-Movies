@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.furq.popularmovies.Constant;
@@ -38,6 +39,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public void onBindViewHolder(MoviesAdapter.MovieViewHolder holder, int position) {
+
         if (!moviesList.get(position).getPosterPath().equals(null)) {
             String url = Constant.IMAGE_BASE_URL + moviesList.get(position).getPosterPath();
 
@@ -48,8 +50,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             Glide.with(context).clear(holder.movieThumbnail);
 //           holder.movieThumbnail.setImageDrawable(specialDrawable);
         }
-
-
+        holder.movieTitle.setText(moviesList.get(position).getTitle());
     }
 
     @Override
@@ -59,19 +60,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
 
-//        private final ProgressBar progressBar;
         private ImageView movieThumbnail;
-
+        private TextView movieTitle;
 
         public MovieViewHolder(View view) {
             super(view);
             movieThumbnail = (ImageView) view.findViewById(R.id.movieThumbnail);
-
+            movieTitle = (TextView) view.findViewById(R.id.movieTitle);
         }
 
-
-        public Object getImage() {
-            return movieThumbnail;
-        }
     }
 }
