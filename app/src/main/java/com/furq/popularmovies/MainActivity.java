@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,6 @@ import com.furq.popularmovies.models.Movie;
 import com.furq.popularmovies.models.MovieResponse;
 import com.furq.popularmovies.utils.ApiClient;
 import com.furq.popularmovies.utils.ApiInterface;
-import com.furq.popularmovies.utils.RecyclerViewClickListener;
 
 import java.util.List;
 
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 if (statusCode == 200) {
                     List<Movie> movies = response.body().getResults();
 
-                    MoviesAdapter recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, MainActivity.this);
+                    MoviesAdapter recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, MainActivity.this, mOnClickListener);
                     gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
                     moviesGrid.setHasFixedSize(true);
                     moviesGrid.setLayoutManager(gridLayoutManager);

@@ -21,14 +21,23 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
+    private static final String TAG = MoviesAdapter.class.getSimpleName();
+
     private List<Movie> moviesList;
     private int itemLayout;
     private Context context;
 
-    public MoviesAdapter(List<Movie> moviesList, int itemLayout, Context context) {
+    final private ListItemClickListener mOnClickListener;
+
+    public interface ListItemClickListener {
+        void onListItemClick(int clickedItemIndex);
+    }
+
+    public MoviesAdapter(List<Movie> moviesList, int itemLayout, Context context, ListItemClickListener mOnClickListener) {
         this.moviesList = moviesList;
         this.itemLayout = itemLayout;
         this.context = context;
+        this.mOnClickListener = mOnClickListener;
     }
 
     @Override
@@ -58,7 +67,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         return moviesList.size();
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder {
+    public static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView movieThumbnail;
         private TextView movieTitle;
@@ -67,7 +76,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             super(view);
             movieThumbnail = (ImageView) view.findViewById(R.id.movieThumbnail);
             movieTitle = (TextView) view.findViewById(R.id.movieTitle);
+            view.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
+
+        }
     }
 }
