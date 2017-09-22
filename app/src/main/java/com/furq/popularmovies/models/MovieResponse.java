@@ -3,7 +3,7 @@ package com.furq.popularmovies.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by furqan.khan on 9/20/17.
@@ -22,7 +22,7 @@ public class MovieResponse {
     private Integer totalPages;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = null;
+    private ArrayList<Movie> results = null;
 
     public Integer getPage() {
         return page;
@@ -48,11 +48,11 @@ public class MovieResponse {
         this.totalPages = totalPages;
     }
 
-    public List<Movie> getResults() {
+    public ArrayList<Movie> getResults() {
         return results;
     }
 
-    public void setResults(List<Movie> results) {
+    public void setResults(ArrayList<Movie> results) {
         this.results = results;
     }
 

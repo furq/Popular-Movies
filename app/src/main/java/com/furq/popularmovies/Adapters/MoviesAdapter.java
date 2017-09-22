@@ -25,7 +25,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private List<Movie> moviesList;
     private int itemLayout;
-    private Context context;
+//    private Context context;
 
     final private ListItemClickListener mOnClickListener;
 
@@ -36,7 +36,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public MoviesAdapter(List<Movie> moviesList, int itemLayout, Context context, ListItemClickListener mOnClickListener) {
         this.moviesList = moviesList;
         this.itemLayout = itemLayout;
-        this.context = context;
+//        this.context = context;
         this.mOnClickListener = mOnClickListener;
     }
 
@@ -52,12 +52,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         if (!moviesList.get(position).getPosterPath().equals(null)) {
             String url = Constant.IMAGE_BASE_URL + moviesList.get(position).getPosterPath();
 
-            Glide.with(context)
+            Glide.with(holder.itemView)
                     .load(url).into(holder.movieThumbnail);
 
         } else {
-            Glide.with(context).clear(holder.movieThumbnail);
-//           holder.movieThumbnail.setImageDrawable(specialDrawable);
+            Glide.with(holder.itemView).clear(holder.movieThumbnail);
         }
         holder.movieTitle.setText(moviesList.get(position).getTitle());
     }
@@ -67,7 +66,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         return moviesList.size();
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView movieThumbnail;
         private TextView movieTitle;
@@ -81,10 +80,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         @Override
         public void onClick(View view) {
-
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
-
         }
     }
 }
