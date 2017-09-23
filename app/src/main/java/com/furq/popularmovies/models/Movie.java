@@ -64,6 +64,7 @@ public class Movie implements Parcelable {
         backdropPath = in.readString();
         overview = in.readString();
         releaseDate = in.readString();
+        voteAverage = in.readDouble();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -204,5 +205,6 @@ public class Movie implements Parcelable {
         parcel.writeString(backdropPath);
         parcel.writeString(overview);
         parcel.writeString(releaseDate);
+        parcel.writeDouble(voteAverage);
     }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+    <string name="detail_release_date"><b>Release date :</b> %s </string>
+    <string name="detail_ratings"><b>Ratings:</b> %s/10</string>
 </resources>
