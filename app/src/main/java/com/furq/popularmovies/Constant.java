@@ -18,7 +18,7 @@ public final class Constant {
     }
 
     // TMDB API KEY
-    public static final String API_KEY = "Your TMDB key ";
+    public static final String API_KEY = BuildConfig.API_KEY;
 
     // BASE URL for TMDB
     public static final String BASE_URL = "http://api.themoviedb.org/3/";

@@ -68,7 +68,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movies", movies);
+        // In order to prevent saving null when internet is not connected
+        if (movies != null) {
+            outState.putParcelableArrayList("movies", movies);
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -111,15 +114,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     }
 
     void populateGridView() {
-        MoviesAdapter recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, MainActivity.this, MainActivity.this);
+        MoviesAdapter recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, MainActivity.this);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            System.out.println("lanf");
-
             gridLayoutManager = new GridLayoutManager(MainActivity.this, 4);
         } else {
             gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
-            System.out.println("port");
         }
         moviesGrid.setHasFixedSize(true);
         moviesGrid.setLayoutManager(gridLayoutManager);

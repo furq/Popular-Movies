@@ -25,7 +25,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private List<Movie> moviesList;
     private int itemLayout;
-//    private Context context;
 
     final private ListItemClickListener mOnClickListener;
 
@@ -33,10 +32,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void onListItemClick(int clickedItemIndex);
     }
 
-    public MoviesAdapter(List<Movie> moviesList, int itemLayout, Context context, ListItemClickListener mOnClickListener) {
+    public MoviesAdapter(List<Movie> moviesList, int itemLayout, ListItemClickListener mOnClickListener) {
         this.moviesList = moviesList;
         this.itemLayout = itemLayout;
-//        this.context = context;
         this.mOnClickListener = mOnClickListener;
     }
 
