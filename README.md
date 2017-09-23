@@ -1,4 +1,5 @@
-popularMovieApp
+Popular Movie App
+==================
 
 
 An Android app, that helps user to discover movies. 
@@ -23,8 +24,8 @@ Setup
 
 The app uses themoviedb.org API to get movie information and posters. You must provide your own [API key][1] in order to build the app.
 
-Just put your API key into "com.furq.popularmovies.Constant.java" file:
+Just put your API key into `build.properties` file:
 
 ```API_KEY
-API_KEY = "Your TMDB key "
+API_KEY= "your TMDB api Key"
 ```
