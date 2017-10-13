@@ -26,4 +26,7 @@ public final class Constant {
     // BASE URL for image on TMDB
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
 
+    // BASE URL for backdrop image on TMDB
+    public static final String BACKDROP_IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500/";
+
 }

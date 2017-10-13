@@ -1,6 +1,5 @@
 package com.furq.popularmovies.Adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
 import com.furq.popularmovies.Constant;
 import com.furq.popularmovies.R;
 import com.furq.popularmovies.models.Movie;
 
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by furqan.khan on 9/20/17.
@@ -66,13 +69,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView movieThumbnail;
-        private TextView movieTitle;
+        @Bind(R.id.movieThumbnail)
+        ImageView movieThumbnail;
+        @Bind(R.id.movieTitle)
+        TextView movieTitle;
 
         public MovieViewHolder(View view) {
             super(view);
-            movieThumbnail = (ImageView) view.findViewById(R.id.movieThumbnail);
-            movieTitle = (TextView) view.findViewById(R.id.movieTitle);
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 

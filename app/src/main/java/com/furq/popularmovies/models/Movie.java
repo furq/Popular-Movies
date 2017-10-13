@@ -8,17 +8,24 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by furqan.khan on 9/20/17.
  */
 
-public class Movie implements Parcelable {
+public class Movie extends RealmObject implements Parcelable {
+
+
+    @SerializedName("id")
+    @Expose
+    @PrimaryKey
+    private String id;
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
-    @SerializedName("id")
-    @Expose
-    private Integer id;
     @SerializedName("video")
     @Expose
     private Boolean video;
@@ -42,6 +49,7 @@ public class Movie implements Parcelable {
     private String originalTitle;
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private List<Integer> genreIds = null;
     @SerializedName("backdrop_path")
     @Expose
@@ -57,6 +65,7 @@ public class Movie implements Parcelable {
     private String releaseDate;
 
     protected Movie(Parcel in) {
+        id = in.readString();
         title = in.readString();
         posterPath = in.readString();
         originalLanguage = in.readString();
@@ -65,6 +74,10 @@ public class Movie implements Parcelable {
         overview = in.readString();
         releaseDate = in.readString();
         voteAverage = in.readDouble();
+    }
+
+    public Movie() {
+
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -87,11 +100,11 @@ public class Movie implements Parcelable {
         this.voteCount = voteCount;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -198,6 +211,8 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+
+        parcel.writeString(id);
         parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(originalLanguage);

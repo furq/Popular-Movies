@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Popular Movies</string>
     <string name="detail_release_date"><b>Release date :</b> %s </string>
     <string name="detail_ratings"><b>Ratings:</b> %s/10</string>
+
+    <!-- Tabs title -->
+    <string name="tab1">Top Rated</string>
+    <string name="tab2">Popular</string>
+    <string name="tab3">Favourites</string>
+
 </resources>
