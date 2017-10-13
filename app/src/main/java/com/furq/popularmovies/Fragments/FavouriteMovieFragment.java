@@ -11,18 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
 import com.furq.popularmovies.Adapters.MoviesAdapter;
-import com.furq.popularmovies.Constant;
+
 import com.furq.popularmovies.DetailActivity;
 import com.furq.popularmovies.R;
 import com.furq.popularmovies.models.Movie;
-import com.furq.popularmovies.models.MovieResponse;
-import com.furq.popularmovies.utils.ApiClient;
-import com.furq.popularmovies.utils.ApiInterface;
-import com.furq.popularmovies.utils.Network;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +25,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 
 /**
