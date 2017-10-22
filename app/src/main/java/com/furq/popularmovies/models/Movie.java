@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
@@ -16,13 +15,13 @@ import io.realm.annotations.PrimaryKey;
  * Created by furqan.khan on 9/20/17.
  */
 
-public class Movie extends RealmObject implements Parcelable {
+public class Movie implements Parcelable {
 
 
     @SerializedName("id")
     @Expose
     @PrimaryKey
-    private String id;
+    private Integer id;
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
@@ -64,8 +63,8 @@ public class Movie extends RealmObject implements Parcelable {
     @Expose
     private String releaseDate;
 
-    protected Movie(Parcel in) {
-        id = in.readString();
+    public Movie(Parcel in) {
+        id = in.readInt();
         title = in.readString();
         posterPath = in.readString();
         originalLanguage = in.readString();
@@ -76,7 +75,15 @@ public class Movie extends RealmObject implements Parcelable {
         voteAverage = in.readDouble();
     }
 
-    public Movie() {
+    public Movie(int id,String title, String overview, String releaseDate, Double voteAverage, String backdropPath, String  posterPath) {
+
+        this.id = id;
+        this.title = title;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.voteAverage = voteAverage;
+        this.backdropPath= backdropPath;
+        this.posterPath = posterPath;
 
     }
 
@@ -100,11 +107,11 @@ public class Movie extends RealmObject implements Parcelable {
         this.voteCount = voteCount;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -212,7 +219,7 @@ public class Movie extends RealmObject implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
 
-        parcel.writeString(id);
+        parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(originalLanguage);

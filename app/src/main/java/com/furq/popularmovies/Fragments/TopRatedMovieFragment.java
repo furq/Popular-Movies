@@ -3,6 +3,7 @@ package com.furq.popularmovies.Fragments;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.furq.popularmovies.Adapters.MoviesAdapter;
@@ -45,9 +45,33 @@ public class TopRatedMovieFragment extends Fragment implements MoviesAdapter.Lis
     RecyclerView moviesGrid;
     private GridLayoutManager gridLayoutManager;
     private ArrayList<Movie> movies;
+    MoviesAdapter recyclerAdapter;
+
+    Parcelable state;
 
     public TopRatedMovieFragment() {
         // Required empty public constructor
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager = new GridLayoutManager(getContext(), 4);
+        } else {
+            gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        }
+
+        if (Network.isConnected(getContext())) {
+            if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+                getMoviesData();
+            } else {
+                movies = savedInstanceState.getParcelableArrayList("movies");
+                state = savedInstanceState.getParcelable("state");
+                populateGridView();
+            }
+        }
     }
 
     @Override
@@ -59,25 +83,13 @@ public class TopRatedMovieFragment extends Fragment implements MoviesAdapter.Lis
 
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (Network.isConnected(getContext())) {
-            if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-                getMoviesData();
-            } else {
-                movies = savedInstanceState.getParcelableArrayList("movies");
-                populateGridView();
-            }
-        }
-    }
-
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         // In order to prevent saving null when internet is not connected
         if (movies != null) {
             outState.putParcelableArrayList("movies", movies);
+            outState.putParcelable("state", moviesGrid.getLayoutManager().onSaveInstanceState());
         }
     }
 
@@ -118,16 +130,16 @@ public class TopRatedMovieFragment extends Fragment implements MoviesAdapter.Lis
     }
 
     void populateGridView() {
-        MoviesAdapter recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, this);
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridLayoutManager = new GridLayoutManager(getContext(), 4);
-        } else {
-            gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        if (recyclerAdapter == null) {
+            recyclerAdapter = new MoviesAdapter(movies, R.layout.list_movie_item, this);
         }
         moviesGrid.setHasFixedSize(true);
         moviesGrid.setLayoutManager(gridLayoutManager);
         moviesGrid.setAdapter(recyclerAdapter);
+        if (state != null) {
+            moviesGrid.getLayoutManager().onRestoreInstanceState(state);
+        }
+
     }
 
     @Override

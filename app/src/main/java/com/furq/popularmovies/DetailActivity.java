@@ -1,23 +1,33 @@
 package com.furq.popularmovies;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.furq.popularmovies.Db.MovieContract;
 import com.furq.popularmovies.Fragments.MovieDetailsFragment;
 import com.furq.popularmovies.models.Movie;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 
 
 /**
@@ -34,9 +44,11 @@ public class DetailActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.app_bar)
     AppBarLayout appBarLayout;
+    @Bind(R.id.scroll_view)
+    NestedScrollView scrollView;
 
     private Movie movie;
-    private Realm realm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +56,16 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_screen);
         ButterKnife.bind(this);
 
-        // Realm db reference
-        realm = Realm.getDefaultInstance();
-
         // get the intent values which was passed from previous activity
         movie = getIntent().getExtras().getParcelable("movies");
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(isFavourite()) {
+        if (isFavourite()) {
             favourite.setImageResource(R.drawable.heart);
         }
-        ImageView image = (ImageView) findViewById(R.id.backdrop_image);
+        final ImageView image = (ImageView) findViewById(R.id.backdrop_image);
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
@@ -94,26 +103,93 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (realm.isInTransaction())
-                    realm.cancelTransaction();
-
                 if (!isFavourite()) {
-                    realm.beginTransaction();
-                    realm.copyToRealm(movie);
-                    realm.commitTransaction();
+                    Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    addMovie(byteArray);
                     favourite.setImageResource(R.drawable.heart);
                 } else {
-                    realm.beginTransaction();
-                    realm.where(Movie.class).contains("id", movie.getId()).findFirst().deleteFromRealm();
-                    realm.commitTransaction();
+                    removeMovie();
                     favourite.setImageResource(R.drawable.heart_outline);
                 }
             }
         });
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        final int[] position = savedInstanceState.getIntArray("SCROLL_POSITION");
+        if (position != null)
+            scrollView.post(new Runnable() {
+                public void run() {
+                    scrollView.scrollTo(position[0], position[1]);
+                }
+            });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private void removeMovie() {
+        String currentMovieId = String.valueOf(movie.getId());
+        String whereClause = MovieContract.MovieEntry.MOVIE_ID + " = ?";
+        String[] whereArgs = new String[]{currentMovieId};
+        int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, whereClause, whereArgs);
+        File photofile = new File(getFilesDir(), currentMovieId);
+        if (photofile.exists()) {
+            photofile.delete();
+        }
+    }
+
+
+    /**
+     * Add Movie to favorite db and write image to file
+     */
+    private void addMovie(byte[] byteArray) {
+        /* Add Movie to ContentProvider */
+        ContentValues values = new ContentValues();
+        values.put(MovieContract.MovieEntry.MOVIE_ID, movie.getId());
+        values.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getTitle());
+        values.put(MovieContract.MovieEntry.MOVIE_CONTENT, movie.getOverview());
+        values.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getReleaseDate());
+        values.put(MovieContract.MovieEntry.MOVIE_RATING, movie.getVoteAverage());
+        values.put(MovieContract.MovieEntry.MOVIE_POSTER_PATH, movie.getPosterPath());
+        values.put(MovieContract.MovieEntry.MOVIE_BACKDROP_PATH, movie.getBackdropPath());
+        Uri insertedMovieUri = getContentResolver().
+                insert(MovieContract.MovieEntry.CONTENT_URI, values);
+
+        /* Write the file to disk */
+        String filename = String.valueOf(movie.getId());
+        FileOutputStream outputStream;
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(byteArray);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean isFavourite() {
-        return realm.where(Movie.class).contains("id", movie.getId()).findAll().size() != 0;
+        Boolean flag = false;
+        Cursor cursor = getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry.MOVIE_ID},
+                MovieContract.MovieEntry.MOVIE_ID + " = ? ",
+                new String[]{String.valueOf(movie.getId())},
+                null);
+        if (cursor != null) {
+            int cursorCount = cursor.getCount();
+            flag = cursorCount > 0 ? true : false;
+            cursor.close();
+        }
+        return flag;
     }
 
     @Override
@@ -131,6 +207,5 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        realm.close();
     }
 }

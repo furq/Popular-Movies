@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,8 @@ public class MovieDetailsFragment extends Fragment {
     LinearLayout extraLayout;
     @Bind(R.id.trailersRecyclerView)
     RecyclerView trailerHorizontalList;
+    @Bind(R.id.scrollView)
+    ScrollView scrollView;
 
     Movie movie;
     List<Trailer> trailerList;
@@ -116,6 +119,25 @@ public class MovieDetailsFragment extends Fragment {
 
         getTrailers();
         getReview();
+
+        if(savedInstanceState !=null) {
+
+            final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+            if(position != null)
+                scrollView.post(new Runnable() {
+                    public void run() {
+                        scrollView.scrollTo(position[0], position[1]);
+                    }
+                });
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putIntArray("ARTICLE_SCROLL_POSITION",
+                new int[]{ scrollView.getScrollX(), scrollView.getScrollY()});
     }
 
     private void getTrailers() {
